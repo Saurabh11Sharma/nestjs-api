@@ -39,7 +39,7 @@ export class ReportsService {
     return await this.reportRepository.save(newReport);
   }
 
-  async getEstimate(estimateQuery: GetEstimateDTO): Promise<Report[]> {
+  async getEstimate(estimateQuery: GetEstimateDTO): Promise<number | null> {
     const { make, model, year, mileage, lat, lng } = estimateQuery;
 
     const response = await this.reportRepository
@@ -50,6 +50,7 @@ export class ReportsService {
       .andWhere('lat - :lat BETWEEN - 5 AND 5', { lat })
       .andWhere('lng - :lng BETWEEN - 5 AND 5', { lng })
       .andWhere('make - :year BETWEEN - 3 AND 3', { year })
+      .andWhere('approve IS TRUE')
       .orderBy('ABS(mileage - :mileage)', 'DESC')
       .setParameters({ mileage })
       .limit(10)

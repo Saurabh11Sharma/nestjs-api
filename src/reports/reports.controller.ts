@@ -48,7 +48,9 @@ export class ReportsController {
 
   @Get('/estimate')
   @UseGuards(AuthGuard)
-  async getEstimate(@Query() estimateQuery: GetEstimateDTO): Promise<Report[]> {
+  async getEstimate(
+    @Query() estimateQuery: GetEstimateDTO,
+  ): Promise<number | null> {
     return await this.reportsService.getEstimate(estimateQuery);
   }
 }
