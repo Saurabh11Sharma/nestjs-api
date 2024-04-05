@@ -1,36 +1,32 @@
 import {
   Body,
   Controller,
+  Get,
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { CreateReportDTO } from './dtos/create-report.dto';
 import { ReportsService } from './reports.service';
 import { CurrentUser } from 'src/users/decorators/current-user.decorator';
 import { User } from 'src/users/user.entity';
-import { AuthGuard } from 'src/guards/auth.guard';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { ReportDTO } from './dtos/report.dto';
 import { Report } from './report.entity';
 import { ApproveReportDTO } from './dtos/approve-report.dto';
+import { AdminGuard } from 'src/guards/admin.guard';
+import { AuthGuard } from 'src/guards/auth.guard';
+import { GetEstimateDTO } from './dtos/get-estimate.dto';
 
 @Controller('reports')
-@UseGuards(AuthGuard)
 @Serialize(ReportDTO)
 export class ReportsController {
   constructor(private readonly reportsService: ReportsService) {}
 
-  @Post('/create')
-  async createReport(
-    @Body() createReportDTO: CreateReportDTO,
-    @CurrentUser() user: User,
-  ): Promise<Report> {
-    return await this.reportsService.createReport(createReportDTO, user);
-  }
-
   @Patch('/:id')
+  @UseGuards(AdminGuard)
   async changeApproval(
     @Param('id') id: string,
     @Body() approveReport: ApproveReportDTO,
@@ -39,5 +35,20 @@ export class ReportsController {
       parseInt(id),
       approveReport,
     );
+  }
+
+  @Post('/create')
+  @UseGuards(AuthGuard)
+  async createReport(
+    @Body() createReportDTO: CreateReportDTO,
+    @CurrentUser() user: User,
+  ): Promise<Report> {
+    return await this.reportsService.createReport(createReportDTO, user);
+  }
+
+  @Get('/estimate')
+  @UseGuards(AuthGuard)
+  async getEstimate(@Query() estimateQuery: GetEstimateDTO): Promise<Report[]> {
+    return await this.reportsService.getEstimate(estimateQuery);
   }
 }
