@@ -1,10 +1,18 @@
-# compiled output
-/dist
+# Dependencies and compiled output
 /node_modules
-.env.dev
-.env.test
-dev.sqlite
-test.sqlite
+/dist
+/coverage
+/.nyc_output
+
+# Environment files: keep only the safe template
+.env
+.env.*
+!.env.example
+
+# Local database files
+*.sqlite
+*.sqlite3
+*.db
 
 # Logs
 logs
@@ -13,25 +21,10 @@ npm-debug.log*
 pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-lerna-debug.log*
 
-# OS
+# OS and editor files
 .DS_Store
-
-# Tests
-/coverage
-/.nyc_output
-
-# IDEs and editors
-/.idea
-.project
-.classpath
-.c9/
-*.launch
-.settings/
-*.sublime-workspace
-
-# IDE - VSCode
+.idea/
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
